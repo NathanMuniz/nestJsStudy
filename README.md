@@ -1,6 +1,6 @@
 # nestJsStudy
 Creating and studying nestJs applcation
 
-Praticando aplicação nest
+Praticando aplicação nest.
 
 first commit
