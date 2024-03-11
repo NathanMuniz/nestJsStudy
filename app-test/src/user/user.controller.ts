@@ -1,51 +1,68 @@
 import {
-  Controller,
-  Get,
-  Post,
-  UsePipes,
-  Body,
-  Query,
-  Param,
-  UseGuards,
-} from '@nestjs/common';
+    Controller,
+    Get,
+    Post,
+    Put,
+    Body,
+    ValidationPipe,
+    UnprocessableEntityException,
+    Param,
+    NotFoundException,
+    Request,
+  } from '@nestjs/common';
+  import { UserEntity } from './../entities';
+  import { Pagination } from './../paginate';
+  import { UserService } from './user.service';
+  import { UserModel } from './../models';
+  import { UpdateResult } from 'typeorm';
+import { request } from 'http';
+import { throwError } from 'rxjs';
 
-import { ValidationPipe } from '../shared/validation.pipe';
-import { AuthGuard } from '../shared/auth.gaurd';
-import { UserService } from './user.service';
-import { UserDTO } from './user.dto';
-import { User } from './user.decorator';
 
-
-@Controller()
+@Controller('users')
 export class UserController {
-    constructor(private userService: UserService){}
+    constructor(private readonly userService: UserService) {}
 
-    @Get('api/users')
-    showAllUsers(@Query('page') page: number){
-        return this.userService.showAll(page);
+    @Get()
+    async index(@Request() request): Promise<Pagination<UserEntity>> {
+        return await this.userService.paginate({
+            limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10,
+            page: request.query.hasOwnProperty('page') ? request.query.page : 0,
+        })
     }
 
-    @Get('api/users/:username')
-    showOneUser(@Param('username') username : string) {
-        return this.userService.read(username);
-    }
+    @Post()
+    async store(
+        @Body(new ValidationPipe()) user: UserModel,
+        ): Promise<UserEntity> {
+            const emailExits = await this.userService.findByEmail(user.email);
 
-    @Get('auth/whoami')
-    @UseGuards(new AuthGuard())
-    showMe(@User('username') username: string){
-        return this.userService.read(username)
-    }
+            if (emailExits) {
+                throw new UnprocessableEntityException();
+            }
 
-    @Post('auth/login')
-    @UsePipes(new ValidationPipe())
-    login (@Body() data: UserDTO) {
-        return this.userService.login(data);
-    }
+            return await this.userService.create(user);
 
-    @Post('auth/register')
-    @UsePipes(new ValidationPipe())
-    register(@Body() data: UserDTO){
-        return this.userService.register(data);
+        }
+
+    @Put('/{id}')
+    async update(
+        @Param('id') id: number,
+        @Body(new ValidationPipe()) user: UserModel, 
+    ): Promise<UpdateResult> {
+        
+        const userEntity = await this.userService.findById(id);
+
+        if (!userEntity){
+            throw new NotFoundException();
+        }
+
+        return await this.userService.update({
+            ...userEntity,
+            ...user,
+        })
+
+
     }
 
 

@@ -1,17 +1,15 @@
-import { Module } from '@nestjs/common';,
+import { Module } from '@nestjs/common';
+import { UserEntity } from './../entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { IdeaEntity } from '../idea/idea.entity';
-import { CommentEntity } from '../comment/comment.entity';
-import { CommentService } from '../comment/comment.service';
-import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { UserEntity } from './user.entity';
-import { UserResolver } from './user.resolver';
-
+import { UserService } from './user.service';
+import { ConfigModule } from 'nestjs-config';
 
 @Module({
-    imports: [TypeOrmModule.forFeatur([UserEntity, IdeaEntity, CommentEntity])],
+    imports: [ConfigModule, TypeOrmModule.forFeature([UserEntity])],
     controllers: [UserController],
-    providers: [UserService, UserResolver, CommentService]
+    providers: [UserService],
+    exports: [UserService]
 })
+
+export class UserModule{}
