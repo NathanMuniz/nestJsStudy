@@ -5,15 +5,17 @@ import * as mongoose from 'mongoose';
 export const UserSchema = new mongoose.Schema({
 
     id: String,
+    data: {type: Date, default: Date.now},
     name: String,
     surname: String,
     email: String, 
     phone: String,
-    birthDate: Date, 
+    password: String,
+    birthdaydate: Date, 
     roles: [],
     auth: {
         email: {
-            type: Boolean, default: false
+            valid: { type: Boolean, default: false}
         },
         facebook: {
             userId: String,
@@ -22,8 +24,11 @@ export const UserSchema = new mongoose.Schema({
             userId: String,
         }
     },
+    settings: {},
     photos: {
-        photoPic: {type: String},
+        profilePic: {},
+        gallery: {},
+
 
     }
 

@@ -3,19 +3,19 @@ import { IsDate, IsEmail, IsString, IsStrongPassword, minLength } from "class-va
 export class CreateUserDto {
 
     @IsString()
-    name: String;
+    readonly name: String;
 
     @IsString()
-    surname: String;
+    readonly surname: String;
 
     @IsEmail()
-    email: String;
+    readonly email: String;
 
     @IsString()
-    phone: String;
+    readonly phone: String;
 
     @IsDate()
-    birthDate: Date;
+    readonly birthdaydate: Date;
 
     @IsString()
     @IsStrongPassword({

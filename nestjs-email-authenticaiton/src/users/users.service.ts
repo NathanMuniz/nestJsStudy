@@ -7,7 +7,7 @@ import { InjectModel, MongooseModule } from '@nestjs/mongoose';
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel('User') private readonly userModel: Model<UserSch>){}
+  constructor(@InjectModel('User') private readonly userModel: Model<User>){}
 
 
   create(createUserDto: CreateUserDto) {
