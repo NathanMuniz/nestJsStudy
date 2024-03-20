@@ -28,6 +28,4 @@ export const UserSchema = new mongoose.Schema({
     }
 
 
-
-
 })
