@@ -3,19 +3,27 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Model, Mongoose } from 'mongoose';
 import { InjectModel, MongooseModule } from '@nestjs/mongoose';
+import { User } from './entities/user.entity';
+
 
 @Injectable()
 export class UsersService {
 
   constructor(@InjectModel('User') private readonly userModel: Model<User>){}
 
+  async createNewUser(newUser: CreateUserDto): Promise<User>  {
 
-  create(createUserDto: CreateUserDto) {
+    if (this.isValidEmail(newUser.email))
+    
 
-    try {
-      this.userModel.create(createUserDto);
-    }
-    return 'This action adds a new user';
+  }
+
+  isValidEmail(email: string)
+  {
+    if(email){
+      var re = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/; 
+      return re.test(email);
+    }else return false
   }
 
   findAll() {
